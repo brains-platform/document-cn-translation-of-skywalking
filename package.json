@@ -1,12 +1,13 @@
 {
   "name": "document-cn-translation-of-skywalking",
-  "version": "0.0.1",
+  "version": "8.0.0",
   "description": "SkyWalking 文档社区翻译版",
   "contributors": [
     "wu-sheng <wu.sheng@foxmail.com> (https://github.com/wu-sheng)",
     "kezhenxu94 <kezhenxu94@apache.org> (https://github.com/kezhenxu94)",
     "KAMIJYOUDOUMA (https://github.com/KAMIJYOUDOUMA)",
-    "thelight1 (https://github.com/thelight1)"
+    "thelight1 (https://github.com/thelight1)",
+    "dagmom (https://github.com/dagmom)"
   ],
   "repository": "https://github.com/SkyAPM/document-cn-translation-of-skywalking",
   "scripts": {
