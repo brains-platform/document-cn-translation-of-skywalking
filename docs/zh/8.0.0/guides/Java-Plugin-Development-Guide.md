@@ -52,6 +52,7 @@ ExitSpan 代表一个服务客户端或 MQ 的生产者, 在 SkyWalking 的早�
 ```
 
 2. 服务端 Tomcat 7 服务器插件
+
 ```java
             ContextCarrier contextCarrier = new ContextCarrier();
             CarrierItem next = contextCarrier.items();
@@ -68,6 +69,7 @@ ExitSpan 代表一个服务客户端或 MQ 的生产者, 在 SkyWalking 的早�
 除了跨进程, 跨线程也是需要支持的, 例如异步线程（内存中的消息队列）和批处理在 Java 中很常见. 跨进程和跨线程十分相似, 因为都是需要传播上下文. 唯一的区别是, 跨线程不需要序列化.
 
 以下是有关跨线程传播的三个步骤：
+
 1. 使用 `ContextManager#capture` 方法获取 ContextSnapshot 对象.
 2. 让子线程以任何方式, 通过方法参数或由现有参数携带来访问 ContextSnapshot
 3. 在子线程中使用 `ContextManager#continued`.
@@ -79,25 +81,32 @@ ExitSpan 代表一个服务客户端或 MQ 的生产者, 在 SkyWalking 的早�
 ContextManager 提供所有主要 API.
 
 1. 创建 EntrySpan
+
 ```java
 public static AbstractSpan createEntrySpan(String endpointName, ContextCarrier carrier)
 ```
+
 根据操作名称(例如服务名称, uri) 和 **上下文载体 (ContextCarrier)** 创建 EntrySpan.
 
 2. 创建 LocalSpan
+
 ```java
 public static AbstractSpan createLocalSpan(String endpointName)
 ```
+
 根据操作名称(例如完整的方法签名)创建 (e.g. full method signature)
 
 3. 创建 ExitSpan
+
 ```java
 public static AbstractSpan createExitSpan(String endpointName, ContextCarrier carrier, String remotePeer)
 ```
+
 根据操作名称(例如服务名称, uri), **上下文载体 (ContextCarrier)** 以及对等端 (peer) 地址
 (例如 ip + port 或 hostname + port) 创建 ExitSpan.
 
 ### AbstractSpan
+
 ```java
     /**
      * Set the component id, which defines in {@link ComponentsDefine}
@@ -153,8 +162,44 @@ SpanLayer 是 span 的类别. 有五个值:
 4. HTTP
 5. MQ
 
-
 组件 ID 由 SkyWalking 项目定义和保留, 对于组件的名称或 ID 的扩展, 请遵循[组件库的定义与扩展](Component-library-settings.md).
+
+### Special Span Tags
+
+All tags are available in the trace view, meanwhile, in the OAP backend analysis, some special tag or tag combination could provide other advanced features.
+
+#### Tag key `status_code`
+
+The value should be an integer. The response code of OAL entities is according to this.
+
+#### Tag key `db.statement` and `db.type`
+
+The value of `db.statement` should be a String, representing the Database statement, such as SQL, or `[No statement]/`+span#operationName if value is empty.
+When exit span has this tag, OAP samples the slow statements based on `receiver-trace/default/maxSlowSQLLength`.
+The threshold of slow statement is defined by following [`receiver-trace/default/slowDBAccessThreshold`](../setup/backend/slow-db-statement.md)
+
+#### Extension logic endpoint. Tag key `x-le`
+
+Logic endpoint is a concept, which doesn't represent a real RPC call, but requires the statistic.
+The value of `x-le` should be JSON format, with two options.
+
+- Define a separated logic endpoint. Provide its own endpoint name, latency and status. Suitable for entry and local span.
+
+```json
+{
+  "name": "GraphQL-service",
+  "latency": 100,
+  "status": true
+}
+```
+
+- Declare the current local span representing a logic endpoint.
+
+```json
+{
+  "logic-span": true
+}
+```
 
 ### 高级 API
 
@@ -195,7 +240,6 @@ SpanLayer 是 span 的类别. 有五个值:
 3. 在全部操作就绪之后, 可在任意线程中调用 `#asyncFinish` 结束调用.
 4. 当所有 Span 的 `#prepareForAsync` 完成后, 追踪上下文会结束, 并一起被回传到后端服务(根据 API 执行次数判断).
 
-
 ## 开发插件
 
 ### 摘要
@@ -205,8 +249,9 @@ SpanLayer 是 span 的类别. 有五个值:
 ### 拦截
 
 SkyWalking 提供两类通用的定义去拦截构造方法, 实例方法和类方法.
-* `ClassInstanceMethodsEnhancePluginDefine` 定义了构造方法 `Contructor` 拦截点和 `instance method` 实例方法拦截点.
-* `ClassStaticMethodsEnhancePluginDefine` 定义了类方法 `class method` 拦截点.
+
+- `ClassInstanceMethodsEnhancePluginDefine` 定义了构造方法 `Contructor` 拦截点和 `instance method` 实例方法拦截点.
+- `ClassStaticMethodsEnhancePluginDefine` 定义了类方法 `class method` 拦截点.
 
 当然, 您也可以继承 `ClassEnhancePluginDefine` 去设置所有的拦截点, 但这不常用.
 
@@ -221,44 +266,42 @@ protected abstract ClassMatch enhanceClass();
 ```
 
 ClassMatch 表示如何去匹配目标类, 这里有四种方法:
-* byName, 通过类的全限定名(Fully Qualified Class Name, 即 包名 + `.` + 类名).
-* byClassAnnotationMatch, 根据目标类是否存在某些注解.
-* byMethodAnnotationMatch, 根据目标类的方法是否存在某些注解.
-* byHierarchyMatch, 根据目标类的父类或接口
+- byName, 通过类的全限定名(Fully Qualified Class Name, 即 包名 + `.` + 类名).
+- byClassAnnotationMatch, 根据目标类是否存在某些注解.
+- byMethodAnnotationMatch, 根据目标类的方法是否存在某些注解.
+- byHierarchyMatch, 根据目标类的父类或接口
 
- **Use Full Qualified Class Name String Literature Instead**.
- 
+**Use Full Qualified Class Name String Literature Instead**.
+
 **注意**:
-*在插件定义中禁止使用 `ThirdPartyClass.class`，例如`takesArguments(ThirdPartyClass.class)`或 `byName(ThirdPartyClass.class.getName())`,
+
+- 在插件定义中禁止使用 `ThirdPartyClass.class`，例如`takesArguments(ThirdPartyClass.class)`或 `byName(ThirdPartyClass.class.getName())`,
 因为 `ThirdPartyClass` 不一定存在目标应用程序中，这样做导致探针异常；
 我们有“导入”检查来帮助在CI流程检查此限制，但它没有涵盖此限制的所有场景，
 所以永远不要试图通过使用完全限定类名(FQCN)之类的方法来绕过这个限制，`takesArguments(full.qualified.ThirdPartyClass.class)`
 和 `byName(full.qualified.ThirdPartyClass.class.getName())` 及时能通过CI检查，但是代理代码中仍然无效,
 使用完全限定的类名字符串文献代替
-
-
-* 禁止使用 `*.class.getName()` 去获取类名, 建议你使用文本字符串, 这是为了避免 ClassLoader 的问题.
-* `by*AnnotationMatch` 不支持从父类继承来的注解.
-* 除非确实必要, 否则不建议使用 `byHierarchyMatch`, 因为使用它可能会触发拦截许多预期之外的方法, 会导致性能问题和不稳定.
-
-
+- 禁止使用 `*.class.getName()` 去获取类名, 建议你使用文本字符串, 这是为了避免 ClassLoader 的问题.
+- `by*AnnotationMatch` 不支持从父类继承来的注解.
+- 除非确实必要, 否则不建议使用 `byHierarchyMatch`, 因为使用它可能会触发拦截许多预期之外的方法, 会导致性能问题和不稳定.
 
 **注意事项**:
-* 禁止使用 `*.class.getName()` 去获取类名, 建议你使用文本字符串, 这是为了避免 ClassLoader 的问题.
-* `by*AnnotationMatch` 不支持从父类继承来的注解.
-* 除非确实必要, 否则不建议使用 `byHierarchyMatch`, 因为使用它可能会触发拦截许多预期之外的方法, 会导致性能问题和不稳定.
+
+- 禁止使用 `*.class.getName()` 去获取类名, 建议你使用文本字符串, 这是为了避免 ClassLoader 的问题.
+- `by*AnnotationMatch` 不支持从父类继承来的注解.
+- 除非确实必要, 否则不建议使用 `byHierarchyMatch`, 因为使用它可能会触发拦截许多预期之外的方法, 会导致性能问题和不稳定.
 
 实例：
 
 ```java
 @Override
 protected ClassMatch enhanceClassName() {
-    return byName("org.apache.catalina.core.StandardEngineValve");		
-}		      
-
+    return byName("org.apache.catalina.core.StandardEngineValve");
+}
 ```
 
 2. 定义实例方法拦截点
+
 ```java
 public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints();
 
@@ -284,6 +327,7 @@ public interface InstanceMethodsInterceptPoint {
 以下部分将告诉您如何实现拦截器.
 
 3. 在文件 `skywalking-plugin.def` 中添加插件定义
+
 ```properties
 tomcat-7.x/8.x=TomcatInstrumentation
 ```
@@ -329,10 +373,12 @@ public interface InstanceMethodsAroundInterceptor {
 
 在方法调用前, 调用后以及异常处理阶段使用核心 API.
 
-### 引导类插件.
+### 引导类插件
+
 skywalk已经将引导工具打包在代理核心中。通过在插装定义中声明它，可以很容易地继承实现它。
 
 Override the `public boolean isBootstrapInstrumentation()` and return **true**. Such as
+
 ```java
 public class URLInstrumentation extends ClassEnhancePluginDefine {
     private static String CLASS_NAME = "java.net.URL";
@@ -371,13 +417,23 @@ public class URLInstrumentation extends ClassEnhancePluginDefine {
 
 **注意**, 引导类插件只拦截最主要的类定义,在实际运行时会影响JRE核心(rt.jar)，随便定义可能会产生意想不到的结果或副作用.
 
-
 在方法调用前, 调用后以及异常处理阶段使用核心 API.
 
+### Plugin Test Tool
+
+[Apache SkyWalking Agent Test Tool Suite](https://github.com/apache/skywalking-agent-test-tool)
+a tremendously useful test tools suite in a wide variety of languages of Agent. Includes mock collector and validator. 
+The mock collector is a SkyWalking receiver, like OAP server.
+
+You could learn how to use this tool to test the plugin in [this doc](Plugin-test.md). If you want to contribute plugins
+to SkyWalking official repo, this is required.
+
 ### 将插件贡献到 Apache SkyWalking 仓库中
+
 我们欢迎大家贡献插件.
 
 请按照以下步骤操作：
+
 1. 提交有关您要贡献哪些插件的问题, 包括支持的版本;
 2. 在 `apm-sniffer/apm-sdk-plugin` 或 `apm-sniffer/optional-plugins` 下创建子模块, 名称应包含支持的库名和版本;
 3. 按照本指南进行开发,确保提供注释和测试用例;
@@ -386,12 +442,3 @@ public class URLInstrumentation extends ClassEnhancePluginDefine {
 6. 发送 Pull Request 并要求审核;
 7. 在提供自动测试用例并在 CI 通过测试后, 插件审批人员会批准您的插件.
 8. 新插件融入Skywalking版本中.
-
-
-
-
-
-
-
-
-

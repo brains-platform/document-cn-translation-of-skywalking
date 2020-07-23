@@ -76,9 +76,11 @@ set "CATALINA_OPTS=-javaagent:/path/to/skywalking-agent/skywalking-agent.jar"
 `agent.span_limit_per_segment`|单个segment中的span的最大个数。通过这个配置项，Skywalking可评估应用程序内存使用量。| 未设置|
 `agent.ignore_suffix`|如果这个集合中包含了第一个span的操作名，这个segment将会被忽略掉。|未设置|
 `agent.is_open_debugging_class`|如果为true，skywalking会将所有经Instrument转换过的类文件保存到`/debugging`文件夹下。Skywalking团队会要求你提供这些类文件以解决兼容性问题。|未设置|
+`agent.is_cache_enhanced_class`|If true, SkyWalking agent will cache all instrumented classes files to memory or disk files (decided by class cache mode), allow another java agent to enhance those classes that enhanced by SkyWalking agent. To use some Java diagnostic tools (such as BTrace, Arthas) to diagnose applications or add a custom java agent to enhance classes, you need to enable this feature. [Read this FAQ for more details](../../../FAQ/Compatible-with-other-javaagent-bytecode-processing.md) |`false`|
+`agent.class_cache_mode`|The instrumented classes cache mode: `MEMORY` or `FILE`. `MEMORY`: cache class bytes to memory, if instrumented classes is too many or too large, it may take up more memory. `FILE`: cache class bytes in `/class-cache` folder, automatically clean up cached class files when the application exits.|`MEMORY`|
 `agent.cause_exception_depth`|在记录异常信息的时候, 探针需要记录的堆栈深度.|5|
-`agent.force_reconnection_period `|grpc的强制重连周期，基于grpc_channel_check_interval.|`1`|
-`agent.operation_name_threshold `|设置操作名不建议超过最大长度(190).|`150`|
+`agent.force_reconnection_period`|grpc的强制重连周期，基于grpc_channel_check_interval.|`1`|
+`agent.operation_name_threshold`|设置操作名不建议超过最大长度(190).|`150`|
 `agent.keep_tracing`|如果该值为 `true`，即使后台不可用，也要保持跟踪.|`false`|
 `osinfo.ipv4_list_size`| 限制ipv4列表的长度. |`10`|
 
@@ -92,7 +94,7 @@ set "CATALINA_OPTS=-javaagent:/path/to/skywalking-agent/skywalking-agent.jar"
 `logging.file_name`|日志文件名|`skywalking-api.log`|
 `logging.output`| 日志输出. 默认是文件. 使用控制台意味着输出到标准输出. |`FILE`|
 `logging.dir`|日志目录。默认为空串，表示使用"system.out"输出日志。|`""`|
-`logging.pattern `|日志格式. 所有的转换说明符: <br>&nbsp;&nbsp;* `%level` means log level. <br>&nbsp;&nbsp;*  `%timestamp` 表示现在的时间格式 `yyyy-MM-dd HH:mm:ss:SSS`.<br>&nbsp;&nbsp;*   `%thread` 表示当前线程的名称.<br>&nbsp;&nbsp;*   `%msg` 表示用户记录的某些消息. <br>&nbsp;&nbsp;*  `%class` 表示TargetClass的SimpleName. <br>&nbsp;&nbsp;*  `%throwable` 表示用户抛出的异常. <br>&nbsp;&nbsp;*  `%agent_name` 表示 `agent.service_name`  |`%level %timestamp %thread %class : %msg %throwable`|
+`logging.pattern`|日志格式. 所有的转换说明符: <br>&nbsp;&nbsp;* `%level` means log level. <br>&nbsp;&nbsp;*  `%timestamp` 表示现在的时间格式 `yyyy-MM-dd HH:mm:ss:SSS`.<br>&nbsp;&nbsp;*   `%thread` 表示当前线程的名称.<br>&nbsp;&nbsp;*   `%msg` 表示用户记录的某些消息. <br>&nbsp;&nbsp;*  `%class` 表示TargetClass的SimpleName. <br>&nbsp;&nbsp;*  `%throwable` 表示用户抛出的异常. <br>&nbsp;&nbsp;*  `%agent_name` 表示 `agent.service_name`  |`%level %timestamp %thread %class : %msg %throwable`|
 `logging.max_file_size`|日志文件的最大大小。当日志文件大小超过这个数，归档当前的日志文件，将日志写入到新文件。|`300 * 1024 * 1024`|
 `logging.max_history_files`|The max history log files. When rollover happened, if log files exceed this number,then the oldest file will be delete. Negative or zero means off, by default.|`-1`|
 
@@ -115,7 +117,7 @@ set "CATALINA_OPTS=-javaagent:/path/to/skywalking-agent/skywalking-agent.jar"
 `plugin.solrj.trace_statement`|如果为 true, 追踪 Solr 查询请求中的所有查询参数(包括 deleteByIds 和 deleteByQuery) 默认为 false.|`false`|
 `plugin.solrj.trace_ops_params`|如果为 true, 追踪 Solr 查询中所有操作参数, 默认为 false.|`false`|
 
-`plugin.peer_max_length `|Peer 描述最大限制.|`200`|
+`plugin.peer_max_length`|Peer 描述最大限制.|`200`|
 `plugin.mongodb.filter_length_limit`|如果设置为正数, `WriteRequest.params` 将被截短到这个长度, 否则它将被完全保存，这可能会导致性能问题.|`256`|
 `plugin.postgresql.trace_sql_parameters`|如果设置为true，将收集sql的参数(通常是 `java.sql.PreparedStatement`).|`false`|
 `plugin.postgresql.sql_parameters_max_length`|如果设置为正数,  `db.sql.parameters` 将被截断到这个长度，否则它将被完全保存，这可能会导致性能问题.|`512`|

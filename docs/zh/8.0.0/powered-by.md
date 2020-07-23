@@ -23,6 +23,7 @@
 - bestsign. 上上签. https://www.bestsign.cn/page/
 - Beike Finance 贝壳金服 https://www.bkjk.com/
 - Bizsaas.cn 北京商云科技发展有限公司. http://www.bizsaas.cn/
+- BoCloud 苏州博纳讯动软件有限公司. http://www.bocloud.com.cn/
 - Cdlhyj.com 六合远教（成都）科技有限公司 http://www.cdlhyj.com
 - Chehejia Automotive. 北京车和家信息技术有限责任公司. https://www.chehejia.com/
 - China Eastern Airlines 中国东方航空 http://www.ceair.com/
@@ -46,6 +47,7 @@
 - Deyoushenghuo in WeChat app. 河南有态度信息科技有限公司，微信小程序：得有生活
 - Dianfubao.com 垫富宝 https://www.dianfubao.com/
 - DiDi 滴滴出行
+- dxy.cn 丁香园  http://www.dxy.cn/
 - Echplus.com 北京易诚互动网络技术有限公司 http://www.echplus.com/
 - Enmonster 怪兽充电 http://www.enmonster.com/
 - Eqxiu.com. 北京中网易企秀科技有限公司 http://www.eqxiu.com/

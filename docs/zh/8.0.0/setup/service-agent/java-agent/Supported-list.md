@@ -1,3 +1,5 @@
+# 支持探针
+
 * HTTP Server
   * [Tomcat](https://github.com/apache/tomcat) 7
   * [Tomcat](https://github.com/apache/tomcat) 8
@@ -34,6 +36,7 @@
   * [ShardingSphere](https://github.com/apache/incubator-shardingsphere) 3.0.0, 4.0.0-RC1
   * PostgreSQL Driver 8.x, 9.x, 42.x
   * Mariadb Driver 2.x, 1.8
+  * [InfluxDB](https://github.com/influxdata/influxdb-java) 2.5 -> 2.17
 * RPC框架
   * [Dubbo](https://github.com/alibaba/dubbo) 2.5.4 -> 2.6.0
   * [Dubbox](https://github.com/dangdangdotcom/dubbox) 2.8.4
@@ -44,7 +47,8 @@
   * [SOFARPC](https://github.com/alipay/sofa-rpc) 5.4.0
   * [Armeria](https://github.com/line/armeria) 0.63.0 -> 0.98.0
   * [Apache Avro](http://avro.apache.org) 1.7.0 - 1.8.x
-  * [Finagle](https://github.com/twitter/finagle) 6.25.0 -> 20.1.0 
+  * [Finagle](https://github.com/twitter/finagle) 6.25.0 -> 20.1.0
+  * [Brpc-Java](https://github.com/baidu/brpc-java) 2.3.7 -> 2.5.3
 * MQ
   * [RocketMQ](https://github.com/apache/rocketmq) 4.x
   * [Kafka](http://kafka.apache.org) 0.11.0.0 -> 1.0
@@ -67,7 +71,7 @@
   * [SolrJ](https://lucene.apache.org/solr) 7.0.0-7.7.1
     * [SolrJ](https://github.com/apache/lucene-solr/tree/master/solr/solrj) 7.x
   * [Cassandra](https://github.com/apache/cassandra) 3.x
-    * [cassandra-java-driver](https://github.com/datastax/java-driver) 3.7.0-3.7.2    
+    * [cassandra-java-driver](https://github.com/datastax/java-driver) 3.7.0-3.7.2
 * 服务发现
   * [Netflix Eureka](https://github.com/Netflix/eureka)
 * 分布式协调
@@ -87,6 +91,7 @@
   * Vert.x Web 3.x
 * 线程调度框架
   * [Spring @Async](https://github.com/spring-projects/spring-framework) 4.x and 5.x
+  * [Quasar](https://github.com/puniverse/quasar) 0.7.x
 * 缓存
   * [Ehcache](https://www.ehcache.org/) 2.x
 * Kotlin
